@@ -1974,9 +1974,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     if (this.$store.state.token != '') {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/checkToken', {
-        token: this.$store.state.token
-      }).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/checkToken').then(function (response) {
         if (response) {
           console.log(_this.$store.state.token);
           _this.loading = false;
