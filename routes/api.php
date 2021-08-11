@@ -23,6 +23,6 @@ Route::group(['namespace'=>'Api'],function(){
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/checkToken', [AuthController::class, 'checkToken']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 });
-Route::apiResource('students',StudentController::class);
+Route::apiResource('students',StudentController::class)->middleware('auth:api');

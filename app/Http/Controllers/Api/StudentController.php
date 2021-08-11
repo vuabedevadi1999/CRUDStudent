@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Student;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api');
-    }
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +16,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return response()->json(['students'=>Student::all()],200);
+        $students = Student::orderBy('created_at','desc')->paginate(5);
+        return response()->json(['students'=>$students],200);
     }
 
     /**
@@ -29,29 +26,8 @@ class StudentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request)
     {
-        $messages = [
-            'name.required' => 'Trường tên không được để trống',
-            'email.required' => 'Trường email không được để trống',
-            'email.unique' => 'Email này đã có người sử dụng',
-            'email.email' => 'Đại chỉ email không hợp lệ',
-            'phone.required' => 'Số điện thoại không được để trống',
-            'phone.max' => 'Số điện thoại phải bao gồm 10 số',
-            'phone.min' => 'Số điện thoại phải bao gồm 10 số',
-            'phone.regex' => 'Số điện thoại phải bao gồm 10 chữ số và bắt đầu bằng số 0',
-        ];
-        $validator = Validator::make($request->only(['name','email','phone']),[
-            'name'=> 'required',
-            'email' => 'required|unique:students|email',
-            'phone' => 'required|max:10|min:10|regex:/(0)[0-9]{9}/',
-        ], $messages);
-        if($validator->fails()){
-            return response()->json([
-                'errors'=>$validator->errors(),
-                'inputData'=>$request->only(['name','email','phone'])
-            ],422);
-        }
         Student::create($request->only(['name','email','phone']));
         return response()->json(['success'=> 'Them sinh vien thanh cong']);
     }
@@ -75,30 +51,8 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Student $student)
+    public function update(UpdateStudentRequest $request, Student $student)
     {
-        $messages = [
-            'name.required' => 'Trường tên không được để trống',
-            'email.required' => 'Trường email không được để trống',
-            'email.unique' => 'Email này đã có người sử dụng',
-            'email.email' => 'Đại chỉ email không hợp lệ',
-            'phone.required' => 'Số điện thoại không được để trống',
-            'phone.max' => 'Số điện thoại phải bao gồm 10 số',
-            'phone.min' => 'Số điện thoại phải bao gồm 10 số',
-            'phone.regex' => 'Số điện thoại phải bao gồm 10 chữ số và bắt đầu bằng số 0',
-        ];
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email|unique:students,email,'.$student->id,
-            'phone' => 'required|max:10|min:10|regex:/(0)[0-9]{9}/',
-        ],$messages);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors'=> $validator->errors(),
-                'inputData'=>$request->only(['name','email','phone'],422)
-            ]);
-        }
         $student->update($request->only(['name','email','phone']));
         return response()->json(['success'=> 'Cập sinh vien thanh cong']);
     }
