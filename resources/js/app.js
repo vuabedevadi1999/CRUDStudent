@@ -11,6 +11,9 @@ import "./app/validate";
 // import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm';
 // Vue.component('ValidationProvider',ValidationProvider);
 // Vue.component('ValidationObserver',ValidationObserver);
+var auth_token = store.state.token;
+window.axios = require('axios');
+window.axios.defaults.headers.common ={'Authorization': `Bearer ${auth_token}`};
 Vue.component('pagination', require('laravel-vue-pagination'));
 const router = new VueRouter({
     routes,

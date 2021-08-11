@@ -2269,6 +2269,11 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 // Vue.component('ValidationProvider',ValidationProvider);
 // Vue.component('ValidationObserver',ValidationObserver);
 
+var auth_token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
+window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+window.axios.defaults.headers.common = {
+  'Authorization': "Bearer ".concat(auth_token)
+};
 vue__WEBPACK_IMPORTED_MODULE_4__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__.default({
   routes: _app_routes__WEBPACK_IMPORTED_MODULE_1__.routes,
