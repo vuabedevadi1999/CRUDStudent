@@ -2197,9 +2197,7 @@ __webpack_require__.r(__webpack_exports__);
     this.getAllStudent();
 
     if (this.$store.state.token != '') {
-      axios.post('/api/checkToken', {
-        token: this.$store.state.token
-      }).then(function (response) {
+      axios.post('/api/checkToken').then(function (response) {
         if (response) {
           _this.loading = false;
         }
@@ -2229,9 +2227,7 @@ __webpack_require__.r(__webpack_exports__);
     logout: function logout() {
       var _this2 = this;
 
-      axios.post('api/logout', {
-        token: this.$store.state.token
-      }).then(function (response) {
+      axios.post('api/logout').then(function (response) {
         if (response) {
           _this2.$store.commit('clearToken');
 

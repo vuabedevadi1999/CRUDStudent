@@ -165,7 +165,7 @@ export default {
     mounted(){
         this.getAllStudent();
         if(this.$store.state.token!= ''){
-            axios.post('/api/checkToken',{token : this.$store.state.token})
+            axios.post('/api/checkToken')
                 .then(response=>{
                     if(response){
                         this.loading = false;
@@ -199,7 +199,7 @@ export default {
 
         },
         logout(){
-            axios.post('api/logout',{token : this.$store.state.token})
+            axios.post('api/logout')
                 .then(response=>{
                     if(response){
                         this.$store.commit('clearToken');
