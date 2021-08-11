@@ -64,11 +64,10 @@ export default {
         }
     },
     mounted(){
-        if(this.$store.state.token!= ''){
-            axios.post('/api/checkToken',{token : this.$store.state.token})
+        if(this.$store.state.token != ''){
+            axios.post('/api/checkToken')
                 .then(response=>{
                     if(response){
-                        console.log(this.$store.state.token);
                         this.loading = false;
                         this.$router.push('students');
                     }

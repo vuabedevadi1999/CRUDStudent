@@ -20,6 +20,13 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div v-if="errors" class="bg-red-300">
+                                <div v-for="(v, k) in errors" :key="k" class="alert alert-danger" role="alert">
+                                    <span v-for="error in v" :key="error" class="text-sm">
+                                        {{ error }}
+                                    </span>
+                                </div>
+                            </div>
                             <ValidationObserver v-slot="{ handleSubmit }">
                                 <form @submit.prevent="handleSubmit(saveStudent)">
                                     <ValidationProvider name="fullname" rules="required"  v-slot="{ errors }">
@@ -65,26 +72,33 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <div v-if="errors" class="bg-red-300">
+                                <div v-for="(v, k) in errors" :key="k" class="alert alert-danger" role="alert">
+                                    <span v-for="error in v" :key="error" class="text-sm">
+                                        {{ error }}
+                                    </span>
+                                </div>
+                            </div>
                             <ValidationObserver v-slot="{ handleSubmit }">
                                 <form @submit.prevent="handleSubmit(updateStudent)">
                                     <ValidationProvider name="fullname" rules="required"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="name">Họ và tên</label>
-                                            <input v-model="oldStudent.name" type="text" class="form-control" id="editName" placeholder="Enter name">
+                                            <input v-model="oldStudent.editName" type="text" class="form-control" id="editName" placeholder="Enter name">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="email" rules="required|email"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="email">Địa chỉ email</label>
-                                            <input v-model="oldStudent.email" type="email" class="form-control" id="editEmail" placeholder="Enter email">
+                                            <input v-model="oldStudent.editEmail" type="email" class="form-control" id="editEmail" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="phone" rules="required|phone"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="phone">Số điện thoại</label>
-                                            <input v-model="oldStudent.phone" type="text" class="form-control" id="editPhone" placeholder="Enter phone">
+                                            <input v-model="oldStudent.editPhone" type="text" class="form-control" id="editPhone" placeholder="Enter phone">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
@@ -100,7 +114,7 @@
                 </div>
             </div>
             <button class="btn btn-info" @click="logout">Dang xuat</button>
-            <div class="col-md-12 mt-5">
+            <div class="col-md-12 mt-2">
                 <div class="card">
                     <div class="card-header">Danh sách sinh viên</div>
                     <div class="card-body">
@@ -115,11 +129,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row">id</th>
-                                    <td>name</td>
-                                    <td>email</td>
-                                    <td>phone</td>
+                                <tr v-for="student in studentData.data" :key="student.id">
+                                    <th scope="row">{{student.id}}</th>
+                                    <td>{{ student.name }}</td>
+                                    <td>{{ student.email }}</td>
+                                    <td>{{ student.phone }}</td>
                                     <td>
                                         <button type="button" @click="editStudent(student.id)" class="btn btn-primary" data-toggle="modal" data-target="#editStudent">
                                         Edit
@@ -139,6 +153,7 @@
 </template>
 <script>
 import { ValidationProvider, ValidationObserver } from "vee-validate";
+import axios from 'axios';
 export default {
     name: "StudentList",
     components: {
@@ -147,6 +162,7 @@ export default {
     },
     data(){
         return {
+            errors : null,
             loading:true,
             student: {
                 name:'',
@@ -163,12 +179,12 @@ export default {
         }
     },
     mounted(){
-        this.getAllStudent();
-        if(this.$store.state.token!= ''){
-            axios.post('/api/checkToken',{token : this.$store.state.token})
+        if(this.$store.state.token != ''){
+            axios.post('/api/checkToken')
                 .then(response=>{
                     if(response){
                         this.loading = false;
+                        this.getAllStudent();
                     }
                 })
                 .catch(err=>{
@@ -189,25 +205,59 @@ export default {
                     this.student.name = ''
                     this.student.email = ''
                     this.student.phone = ''
+                    this.getAllStudent();
                 })
                 .catch(err=>{
-                    console.log("abc");
+                    this.errors = err.response.data.errors;
                 })
         },
         editStudent(id){
-
+            axios.get('/api/students/'+ id) 
+                .then(response => {
+                    this.oldStudent.id = response.data.student.id
+                    this.oldStudent.editName = response.data.student.name
+                    this.oldStudent.editEmail = response.data.student.email
+                    this.oldStudent.editPhone = response.data.student.phone
+                })
+                .catch(err => {
+                    this.errors = err.response.data.errors;
+                })
         },
         updateStudent(){
-
+            var student = { 
+                    name:this.oldStudent.editName,
+                    email:this.oldStudent.editEmail,
+                    phone:this.oldStudent.editPhone 
+            };
+            axios.put('/api/students/'+ this.oldStudent.id,student)
+                .then(response => {
+                    this.oldStudent.editName = ''
+                    this.oldStudent.editEmail = ''
+                    this.oldStudent.editPhone = ''
+                    this.getAllStudent();
+                })
         },
         deleteStudent(id){
-
+            if(confirm("Bạn có muốn xóa sinh viên này không?")){
+                axios.delete('/api/students/'+ id)
+                    .then(response => {
+                        this.getAllStudent();
+                        alert(response.data.success)
+                })
+                .catch(error => console.log(error))
+            }
         },
-        getAllStudent(page=1){
-
+        getAllStudent(page = 1){
+            axios.get('api/students?page='+ page)
+                .then(response => {
+                    this.studentData = response.data.students;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
         },
         logout(){
-            axios.post('api/logout',{token : this.$store.state.token})
+            axios.post('api/logout')
                 .then(response=>{
                     if(response){
                         this.$store.commit('clearToken');
