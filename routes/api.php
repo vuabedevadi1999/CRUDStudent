@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\StudentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +25,4 @@ Route::group(['namespace'=>'Api'],function(){
     Route::post('/checkToken', [AuthController::class, 'checkToken']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+Route::apiResource('students',StudentController::class);
