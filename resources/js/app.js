@@ -6,7 +6,11 @@ import App from './app/App'
 import { routes } from './app/routes';
 import VueRouter from 'vue-router';
 import { store } from './app/store'
-
+import "./app/validate";
+// import { ValidationObserver } from 'vee-validate';
+// import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm';
+// Vue.component('ValidationProvider',ValidationProvider);
+// Vue.component('ValidationObserver',ValidationObserver);
 const router = new VueRouter({
     routes,
     mode : 'history',

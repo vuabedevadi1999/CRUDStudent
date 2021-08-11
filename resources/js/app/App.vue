@@ -2,13 +2,13 @@
     <div>
         <div class="navbar">
             <div>
-                <router-link to="/">Home</router-link>
+                <router-link :to="{ name: 'home'}">Home</router-link>
             </div>
             <div>
-                <router-link to="/login">Đăng nhập</router-link>
+                <router-link :to="{ name: 'login'}">Đăng nhập</router-link>
             </div>
             <div>
-                <router-link to="/students">Danh sách sinh viên</router-link>
+                <router-link :to="{ name: 'students'}">Danh sách sinh viên</router-link>
             </div>
         </div>
         <router-view></router-view>

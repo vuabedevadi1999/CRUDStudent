@@ -31,6 +31,7 @@ export default {
                 .catch(err=>{
                     this.loading = false;
                     this.$store.commit('clearToken');
+                    this.$store.commit('clearUser');
                     this.$router.push('login');//chuyen sang trang login
                 })
         }else{
@@ -44,6 +45,7 @@ export default {
                 .then(response=>{
                     if(response){
                         this.$store.commit('clearToken');
+                        this.$store.commit('clearUser');
                         this.$router.push('/');//chuyen sang trang login
                     }
                 })
