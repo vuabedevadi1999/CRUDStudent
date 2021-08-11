@@ -184,7 +184,15 @@ export default {
     },
     methods:{
         saveStudent(){
-
+            axios.post('/api/students',this.student)
+                .then(response=>{
+                    this.student.name = ''
+                    this.student.email = ''
+                    this.student.phone = ''
+                })
+                .catch(err=>{
+                    console.log("abc");
+                })
         },
         editStudent(id){
 

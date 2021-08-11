@@ -2219,7 +2219,17 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    saveStudent: function saveStudent() {},
+    saveStudent: function saveStudent() {
+      var _this2 = this;
+
+      axios.post('/api/students', this.student).then(function (response) {
+        _this2.student.name = '';
+        _this2.student.email = '';
+        _this2.student.phone = '';
+      })["catch"](function (err) {
+        console.log("abc");
+      });
+    },
     editStudent: function editStudent(id) {},
     updateStudent: function updateStudent() {},
     deleteStudent: function deleteStudent(id) {},
@@ -2227,17 +2237,17 @@ __webpack_require__.r(__webpack_exports__);
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
     },
     logout: function logout() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.post('api/logout', {
         token: this.$store.state.token
       }).then(function (response) {
         if (response) {
-          _this2.$store.commit('clearToken');
+          _this3.$store.commit('clearToken');
 
-          _this2.$store.commit('clearUser');
+          _this3.$store.commit('clearUser');
 
-          _this2.$router.push('/'); //chuyen sang trang login
+          _this3.$router.push('/'); //chuyen sang trang login
 
         }
       });
@@ -2273,6 +2283,11 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 // Vue.component('ValidationProvider',ValidationProvider);
 // Vue.component('ValidationObserver',ValidationObserver);
 
+var auth_token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
+window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+window.axios.defaults.headers.common = {
+  'Authorization': "Bearer ".concat(auth_token)
+};
 vue__WEBPACK_IMPORTED_MODULE_4__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__.default({
   routes: _app_routes__WEBPACK_IMPORTED_MODULE_1__.routes,
