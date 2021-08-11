@@ -11,6 +11,7 @@ import "./app/validate";
 // import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm';
 // Vue.component('ValidationProvider',ValidationProvider);
 // Vue.component('ValidationObserver',ValidationObserver);
+Vue.component('pagination', require('laravel-vue-pagination'));
 const router = new VueRouter({
     routes,
     mode : 'history',
