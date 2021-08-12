@@ -1998,13 +1998,16 @@ __webpack_require__.r(__webpack_exports__);
       //call api
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/login', this.credentials).then(function (response) {
         if (response.data.success) {
+          console.log('login thanh cong');
+
           _this2.$store.commit('setToken', response.data.token);
 
           _this2.$store.commit('setUser', response.data.user);
 
-          _this2.$router.push('/students');
+          _this2.$router.push('students');
         }
       })["catch"](function (err) {
+        console.log('login that bai');
         _this2.errors = err.response.data.errors;
       });
     }
@@ -2293,7 +2296,7 @@ __webpack_require__.r(__webpack_exports__);
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('api/students?page=' + page).then(function (response) {
         _this6.studentData = response.data.students;
       })["catch"](function (err) {
-        console.log(err);
+        console.log(err.response);
       });
     },
     logout: function logout() {
@@ -2323,12 +2326,14 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _app_App__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app/App */ "./resources/js/app/App.vue");
 /* harmony import */ var _app_routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app/routes */ "./resources/js/app/routes.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _app_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/store */ "./resources/js/app/store.js");
 /* harmony import */ var _app_validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app/validate */ "./resources/js/app/validate.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
@@ -2336,22 +2341,24 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
- // import { ValidationObserver } from 'vee-validate';
-// import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm';
-// Vue.component('ValidationProvider',ValidationProvider);
-// Vue.component('ValidationObserver',ValidationObserver);
 
-var auth_token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
-window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common = {
-  'Authorization': "Bearer ".concat(auth_token)
-};
-vue__WEBPACK_IMPORTED_MODULE_4__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__.default({
+
+vue__WEBPACK_IMPORTED_MODULE_5__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
+axios__WEBPACK_IMPORTED_MODULE_4___default().interceptors.request.use(function (config) {
+  var token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
+
+  if (token) {
+    config.headers['Accept'] = 'application/json';
+    config.headers['Authorization'] = "Bearer ".concat(token);
+  }
+
+  return config;
+});
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_6__.default({
   routes: _app_routes__WEBPACK_IMPORTED_MODULE_1__.routes,
   mode: 'history'
 });
-var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
+var app = new vue__WEBPACK_IMPORTED_MODULE_5__.default({
   el: '#app',
   router: router,
   store: _app_store__WEBPACK_IMPORTED_MODULE_2__.store,

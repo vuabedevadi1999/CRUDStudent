@@ -253,7 +253,7 @@ export default {
                     this.studentData = response.data.students;
                 })
                 .catch(err => {
-                    console.log(err);
+                    console.log(err.response);
                 })
         },
         logout(){

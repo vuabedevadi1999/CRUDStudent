@@ -7,14 +7,16 @@ import { routes } from './app/routes';
 import VueRouter from 'vue-router';
 import { store } from './app/store'
 import "./app/validate";
-// import { ValidationObserver } from 'vee-validate';
-// import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm';
-// Vue.component('ValidationProvider',ValidationProvider);
-// Vue.component('ValidationObserver',ValidationObserver);
-var auth_token = store.state.token;
-window.axios = require('axios');
-window.axios.defaults.headers.common ={'Authorization': `Bearer ${auth_token}`};
+import axios from 'axios';
 Vue.component('pagination', require('laravel-vue-pagination'));
+axios.interceptors.request.use((config)=>{
+    let token = store.state.token;
+    if (token) {
+        config.headers['Accept'] = 'application/json';
+        config.headers['Authorization'] = `Bearer ${ token }`;
+    }
+    return config;
+})
 const router = new VueRouter({
     routes,
     mode : 'history',
