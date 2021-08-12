@@ -7,7 +7,7 @@ import { routes } from './app/routes';
 import VueRouter from 'vue-router';
 import { store } from './app/store'
 import "./app/validate";
-Vue.component('pagination', require('laravel-vue-pagination'));
+import axios from 'axios';
 axios.interceptors.request.use((config)=>{
     let token = store.state.token;
     if (token) {
@@ -16,6 +16,7 @@ axios.interceptors.request.use((config)=>{
     }
     return config;
 })
+Vue.component('pagination', require('laravel-vue-pagination'));
 const router = new VueRouter({
     routes,
     mode : 'history',
