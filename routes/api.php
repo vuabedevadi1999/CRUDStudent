@@ -19,8 +19,8 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 Route::group(['namespace'=>'Api'],function(){
-    Route::post('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/checkToken', [AuthController::class, 'checkToken']);
+    Route::post('/checkToken', [AuthController::class, 'checkToken'])->middleware('auth:api');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 });
