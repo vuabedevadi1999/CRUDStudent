@@ -21,6 +21,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace'=>'Api'],function(){
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/checkToken', [AuthController::class, 'checkToken']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/checkToken', [AuthController::class, 'checkToken'])->middleware('auth:api');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 });

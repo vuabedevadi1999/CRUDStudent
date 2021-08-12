@@ -20,14 +20,14 @@
                             </div>
                             <ValidationObserver v-slot="{ handleSubmit }">
                                 <form @submit.prevent="handleSubmit(login)">
-                                    <ValidationProvider name="email" rules="required|email"  v-slot="{ errors }">
+                                    <ValidationProvider name="email" :rules="validationRules.ruleEmail" v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="exampleInputEmail1">Email address</label>                    
-                                            <input name="email" v-model="credentials.email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                            <input v-model="credentials.email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                      </ValidationProvider>
-                                    <ValidationProvider name="password" rules="required|min:6|max:12" v-slot="{ errors }">
+                                    <ValidationProvider name="password" :rules="validationRules.rulePassword" v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="exampleInputPassword1">Password</label>
                                             <input v-model="credentials.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
@@ -45,14 +45,10 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
-import { ValidationProvider, ValidationObserver } from "vee-validate";
+import { validateForm } from './validateMixin';
 export default {
+    mixins:[validateForm],
     name: "Login",
-    components: {
-        ValidationProvider,
-        ValidationObserver
-    },
     data(){ 
         return {
             errors : null,
@@ -65,7 +61,7 @@ export default {
     },
     mounted(){
         if(this.$store.state.token!= ''){
-            axios.post('/api/checkToken',{token : this.$store.state.token})
+            axios.post('/api/checkToken')
                 .then(response=>{
                     if(response){
                         console.log(this.$store.state.token);

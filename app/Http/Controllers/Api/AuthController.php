@@ -10,10 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth ;
 class AuthController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:api')->except('login');
-    }
     public function login(LoginAuthRequest $request){
         $credenttials = $request->only(['email','password']);
         if(!$token = JWTAuth::attempt($credenttials)){
