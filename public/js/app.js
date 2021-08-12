@@ -1903,9 +1903,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
+/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
 //
 //
 //
@@ -1952,13 +1950,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Login",
   components: {
-    ValidationProvider: vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationProvider,
-    ValidationObserver: vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationObserver
+    ValidationProvider: vee_validate__WEBPACK_IMPORTED_MODULE_0__.ValidationProvider,
+    ValidationObserver: vee_validate__WEBPACK_IMPORTED_MODULE_0__.ValidationObserver
   },
   data: function data() {
     return {
@@ -1974,7 +1971,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     if (this.$store.state.token != '') {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/checkToken').then(function (response) {
+      axios.post('/api/checkToken').then(function (response) {
         if (response) {
           console.log(_this.$store.state.token);
           _this.loading = false;
@@ -1997,7 +1994,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       //call api
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/login', this.credentials).then(function (response) {
+      axios.post('api/login', this.credentials).then(function (response) {
         if (response.data.success) {
           _this2.$store.commit('setToken', response.data.token);
 
@@ -2249,12 +2246,14 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _app_App__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app/App */ "./resources/js/app/App.vue");
 /* harmony import */ var _app_routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app/routes */ "./resources/js/app/routes.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _app_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/store */ "./resources/js/app/store.js");
 /* harmony import */ var _app_validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app/validate */ "./resources/js/app/validate.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
@@ -2262,22 +2261,24 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
- // import { ValidationObserver } from 'vee-validate';
-// import { ValidationProvider } from 'vee-validate/dist/vee-validate.full.esm';
-// Vue.component('ValidationProvider',ValidationProvider);
-// Vue.component('ValidationObserver',ValidationObserver);
 
-var auth_token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
-window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common = {
-  'Authorization': "Bearer ".concat(auth_token)
-};
-vue__WEBPACK_IMPORTED_MODULE_4__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
-var router = new vue_router__WEBPACK_IMPORTED_MODULE_5__.default({
+
+axios__WEBPACK_IMPORTED_MODULE_4___default().interceptors.request.use(function (config) {
+  var token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
+
+  if (token) {
+    config.headers['Accept'] = 'application/json';
+    config.headers['Authorization'] = "Bearer ".concat(token);
+  }
+
+  return config;
+});
+vue__WEBPACK_IMPORTED_MODULE_5__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
+var router = new vue_router__WEBPACK_IMPORTED_MODULE_6__.default({
   routes: _app_routes__WEBPACK_IMPORTED_MODULE_1__.routes,
   mode: 'history'
 });
-var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
+var app = new vue__WEBPACK_IMPORTED_MODULE_5__.default({
   el: '#app',
   router: router,
   store: _app_store__WEBPACK_IMPORTED_MODULE_2__.store,

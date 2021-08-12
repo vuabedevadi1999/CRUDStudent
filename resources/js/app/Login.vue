@@ -45,7 +45,6 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 export default {
     name: "Login",
