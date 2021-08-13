@@ -5,6 +5,7 @@ import App from './app/App'
 import { routes } from './app/routes';
 import VueRouter from 'vue-router';
 import { store } from './app/store'
+import "./app/validate";
 import axios from 'axios';
 axios.interceptors.request.use((config)=>{
     let token = store.state.token;
