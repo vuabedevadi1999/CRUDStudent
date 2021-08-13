@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
+use App\Jobs\SendMailAddStudentJob;
 use App\Models\Student;
 
 class StudentController extends Controller
@@ -28,7 +29,8 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request)
     {
-        Student::create($request->only(['name','email','phone']));
+        $student = Student::create($request->only(['name','email','phone']));
+        dispatch(new SendMailAddStudentJob($student));
         return response()->json(['success'=> 'Them sinh vien thanh cong']);
     }
 
