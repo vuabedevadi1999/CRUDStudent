@@ -29,21 +29,21 @@
                             </div>
                             <ValidationObserver v-slot="{ handleSubmit }">
                                 <form @submit.prevent="handleSubmit(saveStudent)">
-                                    <ValidationProvider name="fullname" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="fullname" :rules="validationRules.ruleRequired"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="name">Họ và tên</label>
                                             <input v-model="student.name" type="text" class="form-control" id="name" placeholder="Enter name">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="email" rules="required|email"  v-slot="{ errors }">
+                                    <ValidationProvider name="email" :rules="validationRules.ruleEmail"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="email">Địa chỉ email</label>
                                             <input v-model="student.email" type="email" class="form-control" id="email" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="phone" rules="required|phone"  v-slot="{ errors }">
+                                    <ValidationProvider name="phone" :rules="validationRules.rulePhone"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="phone">Số điện thoại</label>
                                             <input v-model="student.phone" type="text" class="form-control" id="phone" placeholder="Enter phone">
@@ -81,21 +81,21 @@
                             </div>
                             <ValidationObserver v-slot="{ handleSubmit }">
                                 <form @submit.prevent="handleSubmit(updateStudent)">
-                                    <ValidationProvider name="fullname" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="fullname" :rules="validationRules.ruleRequired"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="name">Họ và tên</label>
                                             <input v-model="oldStudent.editName" type="text" class="form-control" id="editName" placeholder="Enter name">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="email" rules="required|email"  v-slot="{ errors }">
+                                    <ValidationProvider name="email" :rules="validationRules.ruleEmail"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="email">Địa chỉ email</label>
                                             <input v-model="oldStudent.editEmail" type="email" class="form-control" id="editEmail" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="phone" rules="required|phone"  v-slot="{ errors }">
+                                    <ValidationProvider name="phone" :rules="validationRules.rulePhone"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="phone">Số điện thoại</label>
                                             <input v-model="oldStudent.editPhone" type="text" class="form-control" id="editPhone" placeholder="Enter phone">
@@ -132,35 +132,35 @@
                             </div>
                             <ValidationObserver v-slot="{ handleSubmit }">
                                 <form @submit.prevent="handleSubmit(updateProfile)">
-                                    <ValidationProvider name="namePrefile" rules="required"  v-slot="{ errors }">
+                                    <ValidationProvider name="namePrefile" :rules="validationRules.ruleRequired"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="namePrefile">Họ và tên</label>
                                             <input v-model="profile.name" type="text" class="form-control" id="namePrefile" placeholder="Enter name">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="email" rules="required|email"  v-slot="{ errors }">
+                                    <ValidationProvider name="email" :rules="validationRules.ruleEmail"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="email">Địa chỉ email</label>
                                             <input v-model="profile.email" type="email" class="form-control" id="emailProfile" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="password" rules="required|min:6|max:12"  v-slot="{ errors }">
+                                    <ValidationProvider name="password" :rules="validationRules.rulePassword"  v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="oldPassword">Mật khẩu cũ</label>
                                             <input v-model="profile.oldPassword" type="password" class="form-control" id="oldPassword" placeholder="Enter phone">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="password" rules="required|min:6|max:12" vid="profile.newPassword" v-slot="{ errors }">
+                                    <ValidationProvider name="password" :rules="validationRules.rulePassword" vid="profile.newPassword" v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="newPassword">Mật khẩu mới</label>
                                             <input v-model="profile.newPassword" type="password" class="form-control" id="newPassword" placeholder="Enter phone">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <ValidationProvider name="password" rules="required|min:6|max:12|confirmed:profile.newPassword" vid="confirmation" v-slot="{ errors }">
+                                    <ValidationProvider name="password" :rules="validationRules.rulePasswordConfirm" vid="confirmation" v-slot="{ errors }">
                                         <div class="form-group">
                                             <label for="passwordConfirm">Nhập lại mật khẩu</label>
                                             <input v-model="profile.passwordConfirm" type="password" class="form-control" id="passwordConfirm" placeholder="Enter phone">
@@ -218,14 +218,10 @@
     
 </template>
 <script>
-import { ValidationProvider, ValidationObserver } from "vee-validate";
-import axios from 'axios';
+import { validateForm } from './validateMixin';
 export default {
+    mixins:[validateForm],
     name: "StudentList",
-    components: {
-        ValidationProvider,
-        ValidationObserver
-    },
     data(){
         return {
             errors : null,
@@ -308,6 +304,9 @@ export default {
                     this.oldStudent.editEmail = ''
                     this.oldStudent.editPhone = ''
                     this.getAllStudent();
+                })
+                .catch(err => {
+                    this.errors = err.response.data.errors;
                 })
         },
         deleteStudent(id){

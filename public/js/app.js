@@ -2021,9 +2021,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _validateMixin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./validateMixin */ "./resources/js/app/validateMixin.js");
 //
 //
 //
@@ -2243,14 +2241,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  mixins: [_validateMixin__WEBPACK_IMPORTED_MODULE_0__.validateForm],
   name: "StudentList",
-  components: {
-    ValidationProvider: vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationProvider,
-    ValidationObserver: vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationObserver
-  },
   data: function data() {
     return {
       errors: null,
@@ -2280,7 +2274,7 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     if (this.$store.state.token != '') {
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/checkToken').then(function (response) {
+      axios.post('/api/checkToken').then(function (response) {
         if (response) {
           _this.loading = false;
 
@@ -2305,7 +2299,7 @@ __webpack_require__.r(__webpack_exports__);
     saveStudent: function saveStudent() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/students', this.student).then(function (response) {
+      axios.post('/api/students', this.student).then(function (response) {
         _this2.student.name = '';
         _this2.student.email = '';
         _this2.student.phone = '';
@@ -2318,7 +2312,7 @@ __webpack_require__.r(__webpack_exports__);
     editStudent: function editStudent(id) {
       var _this3 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/students/' + id).then(function (response) {
+      axios.get('/api/students/' + id).then(function (response) {
         _this3.oldStudent.id = response.data.student.id;
         _this3.oldStudent.editName = response.data.student.name;
         _this3.oldStudent.editEmail = response.data.student.email;
@@ -2335,19 +2329,21 @@ __webpack_require__.r(__webpack_exports__);
         email: this.oldStudent.editEmail,
         phone: this.oldStudent.editPhone
       };
-      axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/students/' + this.oldStudent.id, student).then(function (response) {
+      axios.put('/api/students/' + this.oldStudent.id, student).then(function (response) {
         _this4.oldStudent.editName = '';
         _this4.oldStudent.editEmail = '';
         _this4.oldStudent.editPhone = '';
 
         _this4.getAllStudent();
+      })["catch"](function (err) {
+        _this4.errors = err.response.data.errors;
       });
     },
     deleteStudent: function deleteStudent(id) {
       var _this5 = this;
 
       if (confirm("Bạn có muốn xóa sinh viên này không?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default().delete('/api/students/' + id).then(function (response) {
+        axios["delete"]('/api/students/' + id).then(function (response) {
           _this5.getAllStudent();
 
           alert(response.data.success);
@@ -2360,7 +2356,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this6 = this;
 
       var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('api/students?page=' + page).then(function (response) {
+      axios.get('api/students?page=' + page).then(function (response) {
         _this6.studentData = response.data.students;
       })["catch"](function (err) {
         console.log(err.response);
@@ -2369,7 +2365,7 @@ __webpack_require__.r(__webpack_exports__);
     editProfile: function editProfile() {
       var _this7 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/profile').then(function (response) {
+      axios.post('api/profile').then(function (response) {
         if (response) {
           _this7.profile.name = response.data.user.name;
           _this7.profile.email = response.data.user.email;
@@ -2388,7 +2384,7 @@ __webpack_require__.r(__webpack_exports__);
         password: this.profile.newPassword,
         password_confirmation: this.profile.passwordConfirm
       };
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/update-profile', newProfile).then(function (response) {
+      axios.post('api/update-profile', newProfile).then(function (response) {
         console.log(response);
         _this8.loading = false;
 
@@ -2404,7 +2400,7 @@ __webpack_require__.r(__webpack_exports__);
     logout: function logout() {
       var _this9 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/logout').then(function (response) {
+      axios.post('api/logout').then(function (response) {
         if (response) {
           _this9.$store.commit('clearToken');
 
@@ -2430,14 +2426,14 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _app_App__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app/App */ "./resources/js/app/App.vue");
 /* harmony import */ var _app_routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./app/routes */ "./resources/js/app/routes.js");
 /* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
 /* harmony import */ var _app_store__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/store */ "./resources/js/app/store.js");
-/* harmony import */ var _app_validate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app/validate */ "./resources/js/app/validate.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
@@ -2447,7 +2443,9 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
-axios__WEBPACK_IMPORTED_MODULE_4___default().interceptors.request.use(function (config) {
+vue__WEBPACK_IMPORTED_MODULE_4__.default.component('ValidationProvider', vee_validate__WEBPACK_IMPORTED_MODULE_5__.ValidationProvider);
+vue__WEBPACK_IMPORTED_MODULE_4__.default.component('ValidationObserver', vee_validate__WEBPACK_IMPORTED_MODULE_5__.ValidationObserver);
+axios__WEBPACK_IMPORTED_MODULE_3___default().interceptors.request.use(function (config) {
   var token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
 
   if (token) {
@@ -2457,8 +2455,8 @@ axios__WEBPACK_IMPORTED_MODULE_4___default().interceptors.request.use(function (
 
   return config;
 });
-vue__WEBPACK_IMPORTED_MODULE_5__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
-axios__WEBPACK_IMPORTED_MODULE_4___default().interceptors.request.use(function (config) {
+vue__WEBPACK_IMPORTED_MODULE_4__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
+axios__WEBPACK_IMPORTED_MODULE_3___default().interceptors.request.use(function (config) {
   var token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
 
   if (token) {
@@ -2472,7 +2470,7 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_6__.default({
   routes: _app_routes__WEBPACK_IMPORTED_MODULE_1__.routes,
   mode: 'history'
 });
-var app = new vue__WEBPACK_IMPORTED_MODULE_5__.default({
+var app = new vue__WEBPACK_IMPORTED_MODULE_4__.default({
   el: '#app',
   router: router,
   store: _app_store__WEBPACK_IMPORTED_MODULE_2__.store,
@@ -2564,22 +2562,35 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__.default.Store({
 
 /***/ }),
 
-/***/ "./resources/js/app/validate.js":
-/*!**************************************!*\
-  !*** ./resources/js/app/validate.js ***!
-  \**************************************/
+/***/ "./resources/js/app/validateMixin.js":
+/*!*******************************************!*\
+  !*** ./resources/js/app/validateMixin.js ***!
+  \*******************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "validateForm": () => (/* binding */ validateForm)
+/* harmony export */ });
 /* harmony import */ var vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vee-validate/dist/rules */ "./node_modules/vee-validate/dist/rules.js");
-/* harmony import */ var vee_validate_dist_locale_en_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vee-validate/dist/locale/en.json */ "./node_modules/vee-validate/dist/locale/en.json");
+/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
 
 
-
-
+var validateForm = {
+  data: function data() {
+    return {
+      validationRules: {
+        ruleEmail: 'required',
+        rulePassword: 'required|min:6|max:12',
+        ruleRequired: 'required',
+        rulePasswordConfirm: 'required|min:6|max:12|confirmed:profile.newPassword',
+        rulePhone: 'required|phone'
+      }
+    };
+  }
+};
+(0,vee_validate__WEBPACK_IMPORTED_MODULE_0__.extend)("confirmed", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_1__.confirmed);
 (0,vee_validate__WEBPACK_IMPORTED_MODULE_0__.extend)("required", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_1__.required);
 var regex = {
   regEmail: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
@@ -2596,107 +2607,24 @@ var regPhone = new RegExp(regex.regPhone);
   validate: function validate(value) {
     return regPhone.test(value);
   }
-}); // Install min rule.
-
+});
 (0,vee_validate__WEBPACK_IMPORTED_MODULE_0__.extend)("min", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_1__.min);
 (0,vee_validate__WEBPACK_IMPORTED_MODULE_0__.extend)("max", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_1__.max);
-(0,vee_validate__WEBPACK_IMPORTED_MODULE_0__.extend)("confirmed", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_1__.confirmed);
 (0,vee_validate__WEBPACK_IMPORTED_MODULE_0__.localize)({
   en: {
-    messages: vee_validate_dist_locale_en_json__WEBPACK_IMPORTED_MODULE_2__.messages,
     names: {
+      fullname: 'Họ và tên',
       email: "Địa chỉ email",
       password: "Mật khẩu",
-      fullname: "Tên",
-      phone: "Số điện thoại"
-    },
-    fields: {
-      password: {
-        min: "{_field_} cần tối thiểu 6 ký tự",
-        max: "{_field_} không được phép quá 12 ký tự",
-        required: "{_field_} không được để trống",
-        confirmed: "{_field_} không khớp với mật khẩu trên"
-      },
-      email: {
-        required: "{_field_} không được để trống",
-        email: "{_field_} không hợp lệ"
-      },
-      fullname: {
-        required: "{_field_} không được để trống"
-      },
-      phone: {
-        required: "{_field_} không được để trống",
-        phone: "{_field_} phải bao gồm 10 chữ số và bắt đầu bằng số 0"
-      }
-    }
-  }
-});
-var LOCALE = "en";
-Object.defineProperty(vue__WEBPACK_IMPORTED_MODULE_3__.default.prototype, "locale", {
-  get: function get() {
-    return LOCALE;
-  },
-  set: function set(val) {
-    LOCALE = val;
-    (0,vee_validate__WEBPACK_IMPORTED_MODULE_0__.localize)(val);
-  }
-});
-
-/***/ }),
-
-/***/ "./resources/js/app/validateMixin.js":
-/*!*******************************************!*\
-  !*** ./resources/js/app/validateMixin.js ***!
-  \*******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "validateForm": () => (/* binding */ validateForm)
-/* harmony export */ });
-/* harmony import */ var vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vee-validate/dist/rules */ "./node_modules/vee-validate/dist/rules.js");
-/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-
-
-
-
-vue__WEBPACK_IMPORTED_MODULE_0__.default.component('ValidationProvider', vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationProvider);
-vue__WEBPACK_IMPORTED_MODULE_0__.default.component('ValidationObserver', vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationObserver);
-var validateForm = {
-  data: function data() {
-    return {
-      validationRules: {
-        ruleEmail: 'required',
-        rulePassword: 'required|min:6|max:12'
-      }
-    };
-  }
-};
-(0,vee_validate__WEBPACK_IMPORTED_MODULE_1__.extend)("required", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_2__.required);
-var regex = {
-  regEmail: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/
-};
-var reg = new RegExp(regex.regEmail);
-(0,vee_validate__WEBPACK_IMPORTED_MODULE_1__.extend)("email", {
-  validate: function validate(value) {
-    return reg.test(value);
-  }
-});
-(0,vee_validate__WEBPACK_IMPORTED_MODULE_1__.extend)("min", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_2__.min);
-(0,vee_validate__WEBPACK_IMPORTED_MODULE_1__.extend)("max", vee_validate_dist_rules__WEBPACK_IMPORTED_MODULE_2__.max);
-(0,vee_validate__WEBPACK_IMPORTED_MODULE_1__.localize)({
-  en: {
-    names: {
-      email: "Địa chỉ email",
-      password: "Mật khẩu"
+      phone: 'Số điện thoại'
     },
     messages: {
       min: "{_field_} cần tối thiểu {length} ký tự",
       max: "{_field_} không được phép quá {length} ký tự",
       required: "{_field_} không được để trống",
-      email: "{_field_} không hợp lệ"
+      email: "{_field_} không hợp lệ",
+      phone: "{_field_} phải bắt đầu bằng 0 và có 10 chữ số",
+      confirmed: "{_field_} không trùng khớp"
     }
   }
 });
@@ -42911,7 +42839,8 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "fullname",
-                                          rules: "required"
+                                          rules:
+                                            _vm.validationRules.ruleRequired
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43003,7 +42932,7 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "email",
-                                          rules: "required|email"
+                                          rules: _vm.validationRules.ruleEmail
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43101,7 +43030,7 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "phone",
-                                          rules: "required|phone"
+                                          rules: _vm.validationRules.rulePhone
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43300,7 +43229,8 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "fullname",
-                                          rules: "required"
+                                          rules:
+                                            _vm.validationRules.ruleRequired
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43394,7 +43324,7 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "email",
-                                          rules: "required|email"
+                                          rules: _vm.validationRules.ruleEmail
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43494,7 +43424,7 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "phone",
-                                          rules: "required|phone"
+                                          rules: _vm.validationRules.rulePhone
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43695,7 +43625,8 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "namePrefile",
-                                          rules: "required"
+                                          rules:
+                                            _vm.validationRules.ruleRequired
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43789,7 +43720,7 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "email",
-                                          rules: "required|email"
+                                          rules: _vm.validationRules.ruleEmail
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43887,7 +43818,8 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "password",
-                                          rules: "required|min:6|max:12"
+                                          rules:
+                                            _vm.validationRules.rulePassword
                                         },
                                         scopedSlots: _vm._u(
                                           [
@@ -43983,7 +43915,8 @@ var render = function() {
                                       _c("ValidationProvider", {
                                         attrs: {
                                           name: "password",
-                                          rules: "required|min:6|max:12",
+                                          rules:
+                                            _vm.validationRules.rulePassword,
                                           vid: "profile.newPassword"
                                         },
                                         scopedSlots: _vm._u(
@@ -44081,7 +44014,8 @@ var render = function() {
                                         attrs: {
                                           name: "password",
                                           rules:
-                                            "required|min:6|max:12|confirmed:profile.newPassword",
+                                            _vm.validationRules
+                                              .rulePasswordConfirm,
                                           vid: "confirmation"
                                         },
                                         scopedSlots: _vm._u(
@@ -61054,17 +60988,6 @@ var index = {
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (index);
 
 
-
-/***/ }),
-
-/***/ "./node_modules/vee-validate/dist/locale/en.json":
-/*!*******************************************************!*\
-  !*** ./node_modules/vee-validate/dist/locale/en.json ***!
-  \*******************************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"code":"en","messages":{"alpha":"The {_field_} field may only contain alphabetic characters","alpha_num":"The {_field_} field may only contain alpha-numeric characters","alpha_dash":"The {_field_} field may contain alpha-numeric characters as well as dashes and underscores","alpha_spaces":"The {_field_} field may only contain alphabetic characters as well as spaces","between":"The {_field_} field must be between {min} and {max}","confirmed":"The {_field_} field confirmation does not match","digits":"The {_field_} field must be numeric and exactly contain {length} digits","dimensions":"The {_field_} field must be {width} pixels by {height} pixels","email":"The {_field_} field must be a valid email","excluded":"The {_field_} field is not a valid value","ext":"The {_field_} field is not a valid file","image":"The {_field_} field must be an image","integer":"The {_field_} field must be an integer","length":"The {_field_} field must be {length} long","max_value":"The {_field_} field must be {max} or less","max":"The {_field_} field may not be greater than {length} characters","mimes":"The {_field_} field must have a valid file type","min_value":"The {_field_} field must be {min} or more","min":"The {_field_} field must be at least {length} characters","numeric":"The {_field_} field may only contain numeric characters","oneOf":"The {_field_} field is not a valid value","regex":"The {_field_} field format is invalid","required_if":"The {_field_} field is required","required":"The {_field_} field is required","size":"The {_field_} field size must be less than {size}KB","double":"The {_field_} field must be a valid decimal"}}');
 
 /***/ })
 
