@@ -1970,7 +1970,6 @@ __webpack_require__.r(__webpack_exports__);
     if (this.$store.state.token != '') {
       axios.post('/api/checkToken').then(function (response) {
         if (response) {
-          console.log(_this.$store.state.token);
           _this.loading = false;
 
           _this.$router.push('students');
@@ -1993,13 +1992,16 @@ __webpack_require__.r(__webpack_exports__);
       //call api
       axios.post('api/login', this.credentials).then(function (response) {
         if (response.data.success) {
+          console.log('login thanh cong');
+
           _this2.$store.commit('setToken', response.data.token);
 
           _this2.$store.commit('setUser', response.data.user);
 
-          _this2.$router.push('/students');
+          _this2.$router.push('students');
         }
       })["catch"](function (err) {
+        console.log('login that bai');
         _this2.errors = err.response.data.errors;
       });
     }
@@ -2019,7 +2021,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
+/* harmony import */ var vee_validate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vee-validate */ "./node_modules/vee-validate/dist/vee-validate.esm.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2160,14 +2178,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "StudentList",
   components: {
-    ValidationProvider: vee_validate__WEBPACK_IMPORTED_MODULE_0__.ValidationProvider,
-    ValidationObserver: vee_validate__WEBPACK_IMPORTED_MODULE_0__.ValidationObserver
+    ValidationProvider: vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationProvider,
+    ValidationObserver: vee_validate__WEBPACK_IMPORTED_MODULE_1__.ValidationObserver
   },
   data: function data() {
     return {
+      errors: null,
       loading: true,
       student: {
         name: '',
@@ -2186,12 +2206,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    this.getAllStudent();
-
     if (this.$store.state.token != '') {
-      axios.post('/api/checkToken').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/checkToken').then(function (response) {
         if (response) {
           _this.loading = false;
+
+          _this.getAllStudent();
         }
       })["catch"](function (err) {
         _this.loading = false;
@@ -2209,23 +2229,80 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    saveStudent: function saveStudent() {},
-    editStudent: function editStudent(id) {},
-    updateStudent: function updateStudent() {},
-    deleteStudent: function deleteStudent(id) {},
-    getAllStudent: function getAllStudent() {
-      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-    },
-    logout: function logout() {
+    saveStudent: function saveStudent() {
       var _this2 = this;
 
-      axios.post('api/logout').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/students', this.student).then(function (response) {
+        _this2.student.name = '';
+        _this2.student.email = '';
+        _this2.student.phone = '';
+
+        _this2.getAllStudent();
+      })["catch"](function (err) {
+        _this2.errors = err.response.data.errors;
+      });
+    },
+    editStudent: function editStudent(id) {
+      var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/students/' + id).then(function (response) {
+        _this3.oldStudent.id = response.data.student.id;
+        _this3.oldStudent.editName = response.data.student.name;
+        _this3.oldStudent.editEmail = response.data.student.email;
+        _this3.oldStudent.editPhone = response.data.student.phone;
+      })["catch"](function (err) {
+        _this3.errors = err.response.data.errors;
+      });
+    },
+    updateStudent: function updateStudent() {
+      var _this4 = this;
+
+      var student = {
+        name: this.oldStudent.editName,
+        email: this.oldStudent.editEmail,
+        phone: this.oldStudent.editPhone
+      };
+      axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/students/' + this.oldStudent.id, student).then(function (response) {
+        _this4.oldStudent.editName = '';
+        _this4.oldStudent.editEmail = '';
+        _this4.oldStudent.editPhone = '';
+
+        _this4.getAllStudent();
+      });
+    },
+    deleteStudent: function deleteStudent(id) {
+      var _this5 = this;
+
+      if (confirm("Bạn có muốn xóa sinh viên này không?")) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default().delete('/api/students/' + id).then(function (response) {
+          _this5.getAllStudent();
+
+          alert(response.data.success);
+        })["catch"](function (error) {
+          return console.log(error);
+        });
+      }
+    },
+    getAllStudent: function getAllStudent() {
+      var _this6 = this;
+
+      var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('api/students?page=' + page).then(function (response) {
+        _this6.studentData = response.data.students;
+      })["catch"](function (err) {
+        console.log(err.response);
+      });
+    },
+    logout: function logout() {
+      var _this7 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('api/logout').then(function (response) {
         if (response) {
-          _this2.$store.commit('clearToken');
+          _this7.$store.commit('clearToken');
 
-          _this2.$store.commit('clearUser');
+          _this7.$store.commit('clearUser');
 
-          _this2.$router.push('/'); //chuyen sang trang login
+          _this7.$router.push('/'); //chuyen sang trang login
 
         }
       });
@@ -2271,6 +2348,16 @@ axios__WEBPACK_IMPORTED_MODULE_4___default().interceptors.request.use(function (
   return config;
 });
 vue__WEBPACK_IMPORTED_MODULE_5__.default.component('pagination', __webpack_require__(/*! laravel-vue-pagination */ "./node_modules/laravel-vue-pagination/dist/laravel-vue-pagination.common.js"));
+axios__WEBPACK_IMPORTED_MODULE_4___default().interceptors.request.use(function (config) {
+  var token = _app_store__WEBPACK_IMPORTED_MODULE_2__.store.state.token;
+
+  if (token) {
+    config.headers['Accept'] = 'application/json';
+    config.headers['Authorization'] = "Bearer ".concat(token);
+  }
+
+  return config;
+});
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_6__.default({
   routes: _app_routes__WEBPACK_IMPORTED_MODULE_1__.routes,
   mode: 'history'
@@ -42659,6 +42746,38 @@ var render = function() {
                       "div",
                       { staticClass: "modal-body" },
                       [
+                        _vm.errors
+                          ? _c(
+                              "div",
+                              { staticClass: "bg-red-300" },
+                              _vm._l(_vm.errors, function(v, k) {
+                                return _c(
+                                  "div",
+                                  {
+                                    key: k,
+                                    staticClass: "alert alert-danger",
+                                    attrs: { role: "alert" }
+                                  },
+                                  _vm._l(v, function(error) {
+                                    return _c(
+                                      "span",
+                                      { key: error, staticClass: "text-sm" },
+                                      [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(error) +
+                                            "\n                                "
+                                        )
+                                      ]
+                                    )
+                                  }),
+                                  0
+                                )
+                              }),
+                              0
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
                         _c("ValidationObserver", {
                           scopedSlots: _vm._u([
                             {
@@ -43016,6 +43135,38 @@ var render = function() {
                       "div",
                       { staticClass: "modal-body" },
                       [
+                        _vm.errors
+                          ? _c(
+                              "div",
+                              { staticClass: "bg-red-300" },
+                              _vm._l(_vm.errors, function(v, k) {
+                                return _c(
+                                  "div",
+                                  {
+                                    key: k,
+                                    staticClass: "alert alert-danger",
+                                    attrs: { role: "alert" }
+                                  },
+                                  _vm._l(v, function(error) {
+                                    return _c(
+                                      "span",
+                                      { key: error, staticClass: "text-sm" },
+                                      [
+                                        _vm._v(
+                                          "\n                                    " +
+                                            _vm._s(error) +
+                                            "\n                                "
+                                        )
+                                      ]
+                                    )
+                                  }),
+                                  0
+                                )
+                              }),
+                              0
+                            )
+                          : _vm._e(),
+                        _vm._v(" "),
                         _c("ValidationObserver", {
                           scopedSlots: _vm._u([
                             {
@@ -43067,9 +43218,9 @@ var render = function() {
                                                             rawName: "v-model",
                                                             value:
                                                               _vm.oldStudent
-                                                                .name,
+                                                                .editName,
                                                             expression:
-                                                              "oldStudent.name"
+                                                              "oldStudent.editName"
                                                           }
                                                         ],
                                                         staticClass:
@@ -43082,7 +43233,8 @@ var render = function() {
                                                         },
                                                         domProps: {
                                                           value:
-                                                            _vm.oldStudent.name
+                                                            _vm.oldStudent
+                                                              .editName
                                                         },
                                                         on: {
                                                           input: function(
@@ -43096,7 +43248,7 @@ var render = function() {
                                                             }
                                                             _vm.$set(
                                                               _vm.oldStudent,
-                                                              "name",
+                                                              "editName",
                                                               $event.target
                                                                 .value
                                                             )
@@ -43166,9 +43318,9 @@ var render = function() {
                                                             rawName: "v-model",
                                                             value:
                                                               _vm.oldStudent
-                                                                .email,
+                                                                .editEmail,
                                                             expression:
-                                                              "oldStudent.email"
+                                                              "oldStudent.editEmail"
                                                           }
                                                         ],
                                                         staticClass:
@@ -43181,7 +43333,8 @@ var render = function() {
                                                         },
                                                         domProps: {
                                                           value:
-                                                            _vm.oldStudent.email
+                                                            _vm.oldStudent
+                                                              .editEmail
                                                         },
                                                         on: {
                                                           input: function(
@@ -43195,7 +43348,7 @@ var render = function() {
                                                             }
                                                             _vm.$set(
                                                               _vm.oldStudent,
-                                                              "email",
+                                                              "editEmail",
                                                               $event.target
                                                                 .value
                                                             )
@@ -43265,9 +43418,9 @@ var render = function() {
                                                             rawName: "v-model",
                                                             value:
                                                               _vm.oldStudent
-                                                                .phone,
+                                                                .editPhone,
                                                             expression:
-                                                              "oldStudent.phone"
+                                                              "oldStudent.editPhone"
                                                           }
                                                         ],
                                                         staticClass:
@@ -43280,7 +43433,8 @@ var render = function() {
                                                         },
                                                         domProps: {
                                                           value:
-                                                            _vm.oldStudent.phone
+                                                            _vm.oldStudent
+                                                              .editPhone
                                                         },
                                                         on: {
                                                           input: function(
@@ -43294,7 +43448,7 @@ var render = function() {
                                                             }
                                                             _vm.$set(
                                                               _vm.oldStudent,
-                                                              "phone",
+                                                              "editPhone",
                                                               $event.target
                                                                 .value
                                                             )
@@ -43358,7 +43512,7 @@ var render = function() {
             [_vm._v("Dang xuat")]
           ),
           _vm._v(" "),
-          _c("div", { staticClass: "col-md-12 mt-5" }, [
+          _c("div", { staticClass: "col-md-12 mt-2" }, [
             _c("div", { staticClass: "card" }, [
               _c("div", { staticClass: "card-header" }, [
                 _vm._v("Danh sách sinh viên")
@@ -43371,55 +43525,61 @@ var render = function() {
                   _c("table", { staticClass: "table" }, [
                     _vm._m(5),
                     _vm._v(" "),
-                    _c("tbody", [
-                      _c("tr", [
-                        _c("th", { attrs: { scope: "row" } }, [_vm._v("id")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("name")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("email")]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v("phone")]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-primary",
-                              attrs: {
-                                type: "button",
-                                "data-toggle": "modal",
-                                "data-target": "#editStudent"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.editStudent(_vm.student.id)
-                                }
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                                    Edit\n                                    "
-                              )
-                            ]
-                          ),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.studentData.data, function(student) {
+                        return _c("tr", { key: student.id }, [
+                          _c("th", { attrs: { scope: "row" } }, [
+                            _vm._v(_vm._s(student.id))
+                          ]),
                           _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger",
-                              attrs: { type: "button" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.deleteStudent(_vm.student.id)
+                          _c("td", [_vm._v(_vm._s(student.name))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(student.email))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(student.phone))]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-primary",
+                                attrs: {
+                                  type: "button",
+                                  "data-toggle": "modal",
+                                  "data-target": "#editStudent"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.editStudent(student.id)
+                                  }
                                 }
-                              }
-                            },
-                            [_vm._v("Delete")]
-                          )
+                              },
+                              [
+                                _vm._v(
+                                  "\n                                    Edit\n                                    "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-danger",
+                                attrs: { type: "button" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteStudent(student.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("Delete")]
+                            )
+                          ])
                         ])
-                      ])
-                    ])
+                      }),
+                      0
+                    )
                   ]),
                   _vm._v(" "),
                   _c("pagination", {

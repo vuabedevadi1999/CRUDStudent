@@ -16,6 +16,14 @@ axios.interceptors.request.use((config)=>{
     return config;
 })
 Vue.component('pagination', require('laravel-vue-pagination'));
+axios.interceptors.request.use((config)=>{
+    let token = store.state.token;
+    if (token) {
+        config.headers['Accept'] = 'application/json';
+        config.headers['Authorization'] = `Bearer ${ token }`;
+    }
+    return config;
+})
 const router = new VueRouter({
     routes,
     mode : 'history',

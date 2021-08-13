@@ -60,11 +60,10 @@ export default {
         }
     },
     mounted(){
-        if(this.$store.state.token!= ''){
+        if(this.$store.state.token != ''){
             axios.post('/api/checkToken')
                 .then(response=>{
                     if(response){
-                        console.log(this.$store.state.token);
                         this.loading = false;
                         this.$router.push('students');
                     }
@@ -84,12 +83,14 @@ export default {
             axios.post('api/login',this.credentials)
             .then(response=>{
                 if(response.data.success){
+                    console.log('login thanh cong')
                     this.$store.commit('setToken',response.data.token)
                     this.$store.commit('setUser',response.data.user)
-                    this.$router.push('/students');
+                    this.$router.push('students');
                 }
             })
             .catch(err=>{
+                console.log('login that bai')
                 this.errors = err.response.data.errors;
             })
         }
