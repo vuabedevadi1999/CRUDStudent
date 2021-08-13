@@ -1,6 +1,6 @@
 import Vue from "vue";
 import { extend, localize } from "vee-validate";
-import { required, min , max } from "vee-validate/dist/rules";
+import { required, min , max ,confirmed } from "vee-validate/dist/rules";
 import en from "vee-validate/dist/locale/en.json";
 
 
@@ -8,7 +8,7 @@ extend("required", required);
 
 const regex = {
   regEmail: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
-  regPhone: /(0)[0-9]{9}/
+  regPhone: /(0)[0-9]{9}$/
 }
 const regEmail = new RegExp(regex.regEmail);
 const regPhone = new RegExp(regex.regPhone);
@@ -26,8 +26,8 @@ extend("phone", {
 
 // Install min rule.
 extend("min", min);
-
 extend("max", max);
+extend("confirmed", confirmed);
 
 localize({
   en: {
@@ -43,6 +43,7 @@ localize({
         min: "{_field_} cần tối thiểu 6 ký tự",
         max: "{_field_} không được phép quá 12 ký tự",
         required:"{_field_} không được để trống",
+        confirmed: "{_field_} không khớp với mật khẩu trên"
       },
       email: {
         required:"{_field_} không được để trống",
