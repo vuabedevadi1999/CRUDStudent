@@ -7,6 +7,7 @@ use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use App\Jobs\SendMailAddStudentJob;
 use App\Models\Student;
+use Illuminate\Support\Facades\Gate;
 
 class StudentController extends Controller
 {
@@ -17,8 +18,13 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::orderBy('created_at','desc')->paginate(5);
-        return response()->json(['students'=>$students],200);
+        $response = Gate::inspect('viewAny',Student::class);
+        if($response->allowed()){
+            $students = Student::orderBy('created_at','desc')->paginate(5);
+            return response()->json(['students'=>$students],200);
+        }else{
+            return response()->json(["success"=>$response->message()]);
+        }
     }
 
     /**
@@ -29,9 +35,14 @@ class StudentController extends Controller
      */
     public function store(StoreStudentRequest $request)
     {
-        $student = Student::create($request->only(['name','email','phone']));
-        dispatch(new SendMailAddStudentJob($student));
-        return response()->json(['success'=> 'Them sinh vien thanh cong']);
+        $response = Gate::inspect('create',Student::class);
+        if($response->allowed()){
+            $student = Student::create($request->only(['name','email','phone']));
+            dispatch(new SendMailAddStudentJob($student));
+            return response()->json(['success'=> 'Them sinh vien thanh cong']);
+        }else{
+            return response()->json(['success' => $response->message()],401);
+        }
     }
 
     /**
@@ -42,8 +53,13 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        $student = Student::find($student->id);
-        return response()->json(['student'=>$student],200);
+        $response = Gate::inspect('view',$student);
+        if($response->allowed()){
+            $student = Student::find($student->id);
+            return response()->json(['student'=>$student],200);
+        }else{
+            return response()->json(['success' => $response->message()],401);
+        }
     }
 
     /**
@@ -55,8 +71,13 @@ class StudentController extends Controller
      */
     public function update(UpdateStudentRequest $request, Student $student)
     {
-        $student->update($request->only(['name','email','phone']));
-        return response()->json(['success'=> 'Cập sinh vien thanh cong']);
+        $response = Gate::inspect('update',$student);
+        if($response->allowed()){
+            $student->update($request->only(['name','email','phone']));
+            return response()->json(['success'=> 'Cập sinh vien thanh cong']);
+        }else{
+            return response()->json(['success' => $response->message()],401);
+        }
     }
 
     /**
@@ -67,7 +88,12 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        $student->delete();
-        return response()->json(['success'=>'Xóa thành công sinh viên có id là '.$student->id]);
+        $response = Gate::inspect('delete',$student);
+        if($response->allowed()){
+            $student->delete();
+            return response()->json(['success'=>'Xóa thành công sinh viên có id là '.$student->id]);
+        }else{
+            return response()->json(['success' => $response->message()],401);
+        }
     }
 }

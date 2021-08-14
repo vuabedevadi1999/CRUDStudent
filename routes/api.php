@@ -27,4 +27,5 @@ Route::group(['namespace'=>'Api'],function(){
     Route::post('/checkToken', [AuthController::class, 'checkToken'])->middleware('auth:api');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 });
-Route::apiResource('students',StudentController::class)->middleware('auth:api');
+Route::apiResource('students',StudentController::class)
+->middleware(['auth:api','RoleIsValid']);
