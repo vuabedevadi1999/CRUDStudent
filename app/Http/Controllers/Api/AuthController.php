@@ -32,9 +32,14 @@ class AuthController extends Controller
     }
     public function update(UpdateProfileRequest $request){
         $user = User::find(auth()->id());
+        $img = $request->file('file');
+        $newImage = date('Ymd').'_'.rand(100000,999999).'.'.$img->getClientOriginalExtension();
+        $destinationPath = 'public/images';
+        $img->move($destinationPath,$newImage);
         $user->update([
             'name'=> $request->name,
             'email'=> $request->email,
+            'avatar' => $newImage,
             'password'=> Hash::make($request->password)
         ]);
         auth()->logout();

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from './Home'
 import Login from './Login'
 import StudentList from './StudentList'
+import Profile from './Profile'
 
 Vue.use(VueRouter);
 
@@ -21,5 +22,10 @@ export const routes = [
         path: '/students',
         name: 'students',
         component : StudentList,
+    },
+    {
+        path: '/profile',
+        name: 'profile',
+        component : Profile,
     },
 ]

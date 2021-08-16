@@ -2,13 +2,16 @@
     <div>
         <div class="navbar">
             <div>
-                <router-link :to="{ name: 'home'}">Home</router-link>
+                <router-link :to="{ name: 'home'}">Trang chủ</router-link>
             </div>
             <div>
                 <router-link :to="{ name: 'login'}">Đăng nhập</router-link>
             </div>
             <div>
                 <router-link :to="{ name: 'students'}">Danh sách sinh viên</router-link>
+            </div>
+            <div>
+                <router-link :to="{ name: 'profile'}">Trang cá nhân</router-link>
             </div>
         </div>
         <router-view></router-view>

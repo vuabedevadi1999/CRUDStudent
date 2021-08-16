@@ -1,4 +1,4 @@
-import { required, min , max ,confirmed} from "vee-validate/dist/rules";
+import { required, min , max ,confirmed , image} from "vee-validate/dist/rules";
 import { extend, localize } from "vee-validate";
 export const validateForm = {
     data(){
@@ -8,13 +8,15 @@ export const validateForm = {
                 rulePassword:'required|min:6|max:12',
                 ruleRequired:'required',
                 rulePasswordConfirm:'required|min:6|max:12|confirmed:profile.newPassword',
-                rulePhone:'required|phone'
+                rulePhone:'required|phone',
+                ruleImage:'required|image'
             }
         }
     },
 }
 extend("confirmed", confirmed);
 extend("required", required);
+extend("image", image);
 const regex = {
     regEmail: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
     regPhone: /(0)[0-9]{9}$/
@@ -39,7 +41,8 @@ localize({
             fullname:'Họ và tên',
             email: "Địa chỉ email",
             password: "Mật khẩu",
-            phone:'Số điện thoại'
+            phone:'Số điện thoại',
+            avatar: 'Ảnh đại diện'
         },
         messages:{
             min: "{_field_} cần tối thiểu {length} ký tự",
@@ -47,7 +50,8 @@ localize({
             required:"{_field_} không được để trống",
             email: "{_field_} không hợp lệ",
             phone: "{_field_} phải bắt đầu bằng 0 và có 10 chữ số",
-            confirmed: "{_field_} không trùng khớp"
+            confirmed: "{_field_} không trùng khớp",
+            image: "{_field_} không hợp lệ",
         }
     }
 })

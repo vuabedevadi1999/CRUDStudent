@@ -113,73 +113,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="editProfile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa thông tin cá nhân</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div v-if="errors" class="bg-red-300">
-                                <div v-for="(v, k) in errors" :key="k" class="alert alert-danger" role="alert">
-                                    <span v-for="error in v" :key="error" class="text-sm">
-                                        {{ error }}
-                                    </span>
-                                </div>
-                            </div>
-                            <ValidationObserver v-slot="{ handleSubmit }">
-                                <form @submit.prevent="handleSubmit(updateProfile)">
-                                    <ValidationProvider name="namePrefile" :rules="validationRules.ruleRequired"  v-slot="{ errors }">
-                                        <div class="form-group">
-                                            <label for="namePrefile">Họ và tên</label>
-                                            <input v-model="profile.name" type="text" class="form-control" id="namePrefile" placeholder="Enter name">
-                                            <span class="invalid-feedback">{{ errors[0] }}</span>
-                                        </div>
-                                    </ValidationProvider>
-                                    <ValidationProvider name="email" :rules="validationRules.ruleEmail"  v-slot="{ errors }">
-                                        <div class="form-group">
-                                            <label for="email">Địa chỉ email</label>
-                                            <input v-model="profile.email" type="email" class="form-control" id="emailProfile" placeholder="Enter email">
-                                            <span class="invalid-feedback">{{ errors[0] }}</span>
-                                        </div>
-                                    </ValidationProvider>
-                                    <ValidationProvider name="password" :rules="validationRules.rulePassword"  v-slot="{ errors }">
-                                        <div class="form-group">
-                                            <label for="oldPassword">Mật khẩu cũ</label>
-                                            <input v-model="profile.oldPassword" type="password" class="form-control" id="oldPassword" placeholder="Enter phone">
-                                            <span class="invalid-feedback">{{ errors[0] }}</span>
-                                        </div>
-                                    </ValidationProvider>
-                                    <ValidationProvider name="password" :rules="validationRules.rulePassword" vid="profile.newPassword" v-slot="{ errors }">
-                                        <div class="form-group">
-                                            <label for="newPassword">Mật khẩu mới</label>
-                                            <input v-model="profile.newPassword" type="password" class="form-control" id="newPassword" placeholder="Enter phone">
-                                            <span class="invalid-feedback">{{ errors[0] }}</span>
-                                        </div>
-                                    </ValidationProvider>
-                                    <ValidationProvider name="password" :rules="validationRules.rulePasswordConfirm" vid="confirmation" v-slot="{ errors }">
-                                        <div class="form-group">
-                                            <label for="passwordConfirm">Nhập lại mật khẩu</label>
-                                            <input v-model="profile.passwordConfirm" type="password" class="form-control" id="passwordConfirm" placeholder="Enter phone">
-                                            <span class="invalid-feedback">{{ errors[0] }}</span>
-                                        </div>
-                                    </ValidationProvider>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
-                            </ValidationObserver>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <button class="btn btn-info" @click="logout">Dang xuat</button>
-            <button class="btn btn-info" @click="editProfile" data-toggle="modal" data-target="#editProfile">Chỉnh sửa trang cá nhân</button>
             <div class="col-md-12 mt-2">
                 <div class="card">
                     <div class="card-header">Danh sách sinh viên</div>
@@ -233,16 +167,10 @@ export default {
             },
             oldStudent: {
                 id:'',
+                oldEmail:'',
                 editName:'',
                 editEmail:'',
                 editPhone:''
-            },
-            profile:{
-                name:'',
-                email:'',
-                oldPassword:'',
-                newPassword:'',
-                passwordConfirm:''
             },
             studentData:{}
         }
@@ -257,10 +185,14 @@ export default {
                     }
                 })
                 .catch(err=>{
-                    this.loading = false;
-                    this.$store.commit('clearToken');
-                    this.$store.commit('clearUser');
-                    this.$router.push('login');//chuyen sang trang login
+                    if(err.response.status === 401){
+                        this.$router.push('profile')
+                    }else{
+                        this.loading = false;
+                        this.$store.commit('clearToken');
+                        this.$store.commit('clearUser');
+                        this.$router.push('login');//chuyen sang trang login
+                    }
                 })
         }else{
             this.loading = false;
@@ -284,6 +216,7 @@ export default {
             axios.get('/api/students/'+ id) 
                 .then(response => {
                     this.oldStudent.id = response.data.student.id
+                    this.oldStudent.oldEmail = response.data.student.email
                     this.oldStudent.editName = response.data.student.name
                     this.oldStudent.editEmail = response.data.student.email
                     this.oldStudent.editPhone = response.data.student.phone
@@ -296,6 +229,7 @@ export default {
             var student = { 
                     name:this.oldStudent.editName,
                     email:this.oldStudent.editEmail,
+                    oldEmail:this.oldStudent.oldEmail,
                     phone:this.oldStudent.editPhone 
             };
             axios.put('/api/students/'+ this.oldStudent.id,student)
@@ -326,38 +260,6 @@ export default {
                 })
                 .catch(err => {
                     console.log(err.response);
-                })
-        },
-        editProfile(){
-            axios.post('api/profile')
-                .then(response=>{
-                    if(response){
-                        this.profile.name = response.data.user.name
-                        this.profile.email = response.data.user.email
-                    }
-                })
-                .catch(err=>{
-                    console.log("lỗi")
-                })
-        },
-        updateProfile(){
-        var newProfile = {
-                name:this.profile.name,
-                email:this.profile.email,
-                oldPassword:this.profile.oldPassword,
-                password:this.profile.newPassword,
-                password_confirmation:this.profile.passwordConfirm
-            } 
-            axios.post('api/update-profile',newProfile)
-                .then(response=>{
-                    console.log(response)
-                    this.loading = false;
-                    this.$store.commit('clearToken');
-                    this.$store.commit('clearUser');
-                    this.$router.push('login');
-                })
-                .catch(err=>{
-                    this.errors = err.response.data.errors;
                 })
         },
         logout(){

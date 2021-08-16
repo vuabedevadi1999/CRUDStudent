@@ -24,7 +24,7 @@ Route::group(['namespace'=>'Api'],function(){
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/profile', [AuthController::class, 'userProfile'])->middleware('auth:api');
     Route::post('/update-profile', [AuthController::class, 'update'])->middleware('auth:api');
-    Route::post('/checkToken', [AuthController::class, 'checkToken'])->middleware('auth:api');
+    Route::post('/checkToken', [AuthController::class, 'checkToken'])->middleware(['auth:api','RoleIsValid']);
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 });
 Route::apiResource('students',StudentController::class)

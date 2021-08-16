@@ -36,7 +36,7 @@ class StoreStudentRequest extends FormRequest
     {
         return [
             'name'=> 'required',
-            'email' => 'required|unique:students|email',
+            'email' => 'required|unique:students|email|unique:users,email',
             'phone' => 'required|regex:/(0)[0-9]{9}/'
         ];
     }

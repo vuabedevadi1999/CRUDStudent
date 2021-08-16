@@ -39,6 +39,10 @@ class UpdateProfileRequest extends FormRequest
             'password_confirmation.required' => 'Mật khẩu không được để trống',
             'password_confirmation.min' => "Mật khẩu phải có ít nhất 6 ký tự",
             'password_confirmation.max' => 'Mật khẩu không được quá 12 ký tự',
+            'file.image'=>'Vui lòng chọn hình ảnh 11',
+            'file.mimes'=>'Vui lòng chọn ảnh có dạng jpeg,png,jpg',
+            'file.mimetypes'=>'Vui lòng chọn hình ảnh',
+            'file.max'=>'ảnh chỉ được nhỏ hơn 10MB',
         ];
     }
     public function rules()
@@ -46,6 +50,7 @@ class UpdateProfileRequest extends FormRequest
         $id = auth()->id();
         return [
             'name' => 'required',
+            'file' => 'image|mimes:jpeg,png,jpg|mimetypes:image/jpeg,image/png|max:10000',
             'email' => 'required|email|unique:users,email,'.$id,
             'oldPassword' => 'required|max:12|min:6|password',
             'password' => 'required|max:12|min:6|different:oldPassword|confirmed',

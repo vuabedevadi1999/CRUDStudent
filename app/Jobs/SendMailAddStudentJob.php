@@ -22,9 +22,11 @@ class SendMailAddStudentJob implements ShouldQueue
      * @return void
      */
     protected $student;
-    public function __construct(Student $student)
+    protected $user;
+    public function __construct(Student $student,$user)
     {
         $this->student = $student;
+        $this->user = $user;
     }
 
     /**
@@ -35,6 +37,6 @@ class SendMailAddStudentJob implements ShouldQueue
     public function handle()
     {
         Mail::to($this->student)
-        ->send(new WelcomeStudentMain($this->student));
+        ->send(new WelcomeStudentMain($this->student,$this->user));
     }
 }

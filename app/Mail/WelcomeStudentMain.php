@@ -18,9 +18,11 @@ class WelcomeStudentMain extends Mailable
      * @return void
      */
     public $student;
-    public function __construct(Student $student)
+    public $user;
+    public function __construct(Student $student,$user)
     {
         $this->student = $student;
+        $this->user = $user;
     }
 
     /**

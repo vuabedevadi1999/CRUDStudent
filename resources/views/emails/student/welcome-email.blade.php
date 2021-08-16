@@ -23,6 +23,8 @@
             </tr>
             </tbody>
         </table>
+        <b>Bạn vui lòng đăng nhập tài khoản với email là:{{ $user->email }} và mật khẩu là:123456789</b>
+        <b>Vui lòng đổi mật khẩu sau khi đăng nhập để đảm bảo an toàn</b>
     </div> 
 @endcomponent
 
