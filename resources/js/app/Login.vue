@@ -9,32 +9,27 @@
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header">Dang nhap</div>
+                        <div class="card-header">{{ $t('messages.Login') }}</div>
                         <div class="card-body">
-                            <div v-if="errors" class="bg-red-300">
-                                <div v-for="(v, k) in errors" :key="k" class="alert alert-danger" role="alert">
-                                    <span v-for="error in v" :key="error" class="text-sm">
-                                        {{ error }}
-                                    </span>
-                                </div>
-                            </div>
-                            <ValidationObserver v-slot="{ handleSubmit }">
+                            <ValidationObserver v-slot="{ handleSubmit }" >
                                 <form @submit.prevent="handleSubmit(login)">
                                     <ValidationProvider name="email" :rules="validationRules.ruleEmail" v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Email address</label>                    
-                                            <input v-model="credentials.email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                            <label for="email">{{ $t('messages.Email') }}</label>                    
+                                            <input v-model="credentials.email" type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                            <span v-if="hasError('email')" class="invalid-feedback">{{ firstError('email') }}</span>
                                         </div>
                                      </ValidationProvider>
                                     <ValidationProvider name="password" :rules="validationRules.rulePassword" v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="exampleInputPassword1">Password</label>
-                                            <input v-model="credentials.password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                            <label for="password">{{  $t('messages.Password')  }}</label>
+                                            <input v-model="credentials.password" type="password" class="form-control" id="password" placeholder="Password">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                            <span v-if="hasError('password')" class="invalid-feedback">{{ firstError('password') }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary">{{ $t('messages.Login') }}</button>
                                 </form>
                              </ValidationObserver>
                         </div>

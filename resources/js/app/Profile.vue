@@ -4,9 +4,9 @@
                 <div class="col-md-4">
                     <div class="profile-img">
                         <img v-if="profile.avatar" class="avatar" :src="`./public/images/`+profile.avatar" alt=""/>
-                        <img v-else class="avatar" src="`./public/images/avatar-default.png`" alt=""/>
-                        <button class="btn btn-info mt-2" @click="getProfile" data-toggle="modal" data-target="#editProfile">Chỉnh sửa trang cá nhân</button><br>
-                        <button class="btn btn-danger mt-2" @click="logout">Dang xuat</button>
+                        <img v-else class="avatar" src="`./public/images/avatar-default.png`" alt=""/><br>
+                        <button class="btn btn-info mt-2" @click="getProfile" data-toggle="modal" data-target="#editProfile">{{ $t('messages.Edit profile') }}</button><br>
+                        <button class="btn btn-danger mt-2" @click="logout">{{ $t('messages.Logout')}}</button>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -19,7 +19,7 @@
                         </h6>
                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Thông tin</a>
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">{{ $t('messages.Information') }}</a>
                             </li>
                         </ul>
                     </div>
@@ -29,64 +29,63 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa thông tin cá nhân</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">{{ $t('messages.Edit profile') }}</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div v-if="errors" class="bg-red-300">
-                                <div v-for="(v, k) in errors" :key="k" class="alert alert-danger" role="alert">
-                                    <span v-for="error in v" :key="error" class="text-sm">
-                                        {{ error }}
-                                    </span>
-                                </div>
-                            </div>
                             <ValidationObserver v-slot="{ handleSubmit }">
                                 <form @submit.prevent="handleSubmit(updateProfile)" enctype="multipart/form-data">
                                     <ValidationProvider name="fullname" :rules="validationRules.ruleRequired"  v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="namePrefile">Họ và tên</label>
+                                            <label for="namePrefile">{{ $t('messages.Full name') }}</label>
                                             <input v-model="profile.name" type="text" class="form-control" id="namePrefile" placeholder="Enter name">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                             <span v-if="hasError('name')" class="invalid-feedback">{{ firstError('name') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="avatar" :rules="validationRules.ruleImage" v-slot="{ errors,validate }">
                                         <div class="form-group">
-                                            <label for="avatar">Anh đại diện</label>
+                                            <label for="avatar">{{ $t('messages.Avatar') }}</label>
                                             <input type="file" id="file" ref="file" class="form-control" @change="validate" v-on:change="handleFileUpload()">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                             <span v-if="hasError('file')" class="invalid-feedback">{{ firstError('file') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="email" :rules="validationRules.ruleEmail"  v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="email">Địa chỉ email</label>
+                                            <label for="email">{{ $t('messages.Email') }}</label>
                                             <input v-model="profile.email" type="email" class="form-control" id="emailProfile" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                             <span v-if="hasError('email')" class="invalid-feedback">{{ firstError('email') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="password" :rules="validationRules.rulePassword"  v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="oldPassword">Mật khẩu cũ</label>
+                                            <label for="oldPassword">{{ $t('messages.Old password') }}</label>
                                             <input v-model="profile.oldPassword" type="password" class="form-control" id="oldPassword" placeholder="Enter phone">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                             <span v-if="hasError('oldPassword')" class="invalid-feedback">{{ firstError('oldPassword') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="password" :rules="validationRules.rulePassword" vid="profile.newPassword" v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="newPassword">Mật khẩu mới</label>
+                                            <label for="newPassword">{{ $t('messages.New password') }}</label>
                                             <input v-model="profile.newPassword" type="password" class="form-control" id="newPassword" placeholder="Enter phone">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                            <span v-if="hasError('password')" class="invalid-feedback">{{ firstError('password') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="password" :rules="validationRules.rulePasswordConfirm" vid="confirmation" v-slot="{ errors }">
                                         <div class="form-group">
-                                            <label for="passwordConfirm">Nhập lại mật khẩu</label>
+                                            <label for="passwordConfirm">{{ $t('messages.Confirm Password') }}</label>
                                             <input v-model="profile.passwordConfirm" type="password" class="form-control" id="passwordConfirm" placeholder="Enter phone">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
+                                            <span v-if="hasError('password_confirmation')" class="invalid-feedback">{{ firstError('password_confirmation') }}</span>
                                         </div>
                                     </ValidationProvider>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-primary">{{ $t('messages.Submit') }}</button>
                                 </form>
                             </ValidationObserver>
                         </div>
@@ -110,7 +109,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Họ và tên</label>
+                                    <label>{{ $t('messages.Full name') }}</label>
                                 </div>
                                 <div class="col-md-6">
                                     <p>{{ profile.name }}</p>
@@ -118,7 +117,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Địa chỉ email</label>
+                                    <label>{{ $t('messages.Email') }}</label>
                                 </div>
                                 <div class="col-md-6">
                                     <p>{{ profile.email }}</p>
@@ -126,7 +125,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label>Mật khẩu</label>
+                                    <label>{{ $t('messages.Password') }}</label>
                                 </div>
                                 <div class="col-md-6">
                                     <p>*************</p>
