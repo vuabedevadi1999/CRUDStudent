@@ -24,7 +24,8 @@ class StudentFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->email(),
-            'phone' => rand(1111111111,9999999999)
+            'phone' => rand(1111111111,9999999999),
+            'content' => $this->faker->paragraphs(3,true),
         ];
     }
 }

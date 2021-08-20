@@ -16,7 +16,8 @@ export default new VueI18n({
                 email: "Địa chỉ email",
                 password: "Mật khẩu",
                 phone:"Số điện thoại",
-                avatar: "Ảnh đại diện"
+                avatar: "Ảnh đại diện",
+                content:"Nội dung"
             },
             validation: vi.messages,
             messages:vi.messages
@@ -27,7 +28,8 @@ export default new VueI18n({
                 email: "email",
                 password: "password",
                 phone:"phone",
-                avatar: "avatar"
+                avatar: "avatar",
+                content: "content"
             },
             validation: en.messages,
             messages: en.messages

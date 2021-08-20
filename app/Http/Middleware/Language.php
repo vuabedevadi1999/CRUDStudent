@@ -18,8 +18,11 @@ class Language
      */
     public function handle(Request $request, Closure $next)
     {
-        $locate = ($request->hasHeader("X-localization")) ? $request->header("X-localization") : "en";
-        app()->setLocale($locate);
+        if($request->has('locate')){
+            app()->setLocale($request->locate);
+        }else{
+            app()->setLocale('en');
+        }
         return $next($request);
     }
 }

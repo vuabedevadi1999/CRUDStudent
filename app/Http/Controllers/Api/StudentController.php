@@ -39,7 +39,7 @@ class StudentController extends Controller
     {
         $response = Gate::inspect('create',Student::class);
         if($response->allowed()){
-            $student = Student::create($request->only(['name','email','phone']));
+            $student = Student::create($request->only(['name','email','phone','content']));
             $user = User::create([
                 'name' => $student->name,
                 'email' => $student->email,
@@ -47,7 +47,7 @@ class StudentController extends Controller
                 'avatar' => 'avatar-default.png'
             ]);
             dispatch(new SendMailAddStudentJob($student,$user));
-            return response()->json(['success'=> 'Them sinh vien thanh cong']);
+            return response()->json(['success'=> __('message.CreatedStudent')],201);
         }else{
             return response()->json(['success' => $response->message()],401);
         }
@@ -81,12 +81,12 @@ class StudentController extends Controller
     {
         $response = Gate::inspect('update',$student);
         if($response->allowed()){
-            $student->update($request->only(['name','email','phone']));
+            $student->update($request->only(['name','email','phone','content']));
             $user = User::where('email',$request->oldEmail)->first();
             $user->update(['email'=>$request->email]);
             $newUser = User::where('email',$request->email)->first();
             dispatch(new SendMailAddStudentJob($student,$newUser));
-            return response()->json(['success'=> 'Cập sinh vien thanh cong']);
+            return response()->json(['success' => __('message.UpdatedStudent')]);
         }else{
             return response()->json(['success' => $response->message()],401);
         }
@@ -105,7 +105,7 @@ class StudentController extends Controller
             $student->delete();
             $user = User::where('email',$student->email)->first();
             User::destroy($user->id);
-            return response()->json(['success'=>'Xóa thành công sinh viên có id là '.$student->id]);
+            return response()->json(['success' => __('message.DeletedStudent').$student->id]);
         }else{
             return response()->json(['success' => $response->message()],401);
         }

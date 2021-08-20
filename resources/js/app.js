@@ -7,17 +7,19 @@ import VueRouter from 'vue-router';
 import { store } from './app/store'
 import i18n from './i18n';
 import axios from 'axios';
+import CKEditor  from "ckeditor4-vue";
 import { ValidationProvider, ValidationObserver } from "vee-validate";
 Vue.config.productionTip = false;
+Vue.use(CKEditor);
 Vue.component('ValidationProvider',ValidationProvider);
-Vue.component('ValidationObserver',ValidationObserver);
+Vue.component('ValidationObserver',ValidationObserver)
 axios.interceptors.request.use((config)=>{
     let token = store.state.token;
     let lang = localStorage.getItem('lang') || 'en';
     if (token) {
         config.headers['Accept'] = 'application/json';
         config.headers['Authorization'] = `Bearer ${ token }`;
-        config.headers['X-localization'] = lang;
+        config.params = {'locate' : lang};
     }
     return config;
 })

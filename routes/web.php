@@ -13,5 +13,4 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/language/{locate}',[LanguageController::class,'index'])->middleware('language');
 Route::view('/{app?}', 'welcome')->where('app','.*');

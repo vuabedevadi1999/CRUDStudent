@@ -21,6 +21,6 @@ class RoleIsValid
                 return $next($request);
             }
         }
-        return response()->json(['success' => 'Bạn không có quyền truy cập'],401);
+        return response()->json(['success' => __('message.UnautorizedAccess')],401);
     }
 }

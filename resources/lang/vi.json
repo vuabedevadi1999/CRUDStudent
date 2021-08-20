@@ -27,6 +27,10 @@
         "double": "{_field_} phải là một số thập phân hợp lệ",
         "phone":"{_field_} phải bắt đầu bằng 0 và có 10 chữ số",
 
+        "delete student?":"Bạn có muốn xóa sinh viên này không?",
+        "back":"Trở về",
+        "View":"Xem",
+        "Content":"Nội dung", 
         "Home":"Trang chủ",
         "Login": "Đăng nhập",
         "Logout": "Đăng xuất",

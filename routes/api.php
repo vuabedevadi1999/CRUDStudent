@@ -20,13 +20,14 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
-Route::group(['namespace'=>'Api'],function(){
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/profile', [AuthController::class, 'userProfile'])->middleware('auth:api');
-    Route::post('/update-profile', [AuthController::class, 'update'])->middleware('auth:api');
-    Route::post('/checkToken', [AuthController::class, 'checkToken'])->middleware(['auth:api','RoleIsValid']);
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::group(['middleware' => ['auth:api']],function(){
+    Route::post('/profile', [AuthController::class, 'userProfile']);
+    Route::post('/update-profile', [AuthController::class, 'update']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
-Route::apiResource('students',StudentController::class)
-->middleware(['auth:api','RoleIsValid']);
+Route::group(['middleware' => ['auth:api','RoleIsValid']],function(){
+    Route::apiResource('students',StudentController::class);
+    Route::post('/checkToken', [AuthController::class, 'checkToken']);
+});

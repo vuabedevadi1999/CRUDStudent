@@ -35,9 +35,9 @@ class StoreStudentRequest extends FormRequest
     // }
     public function rules()
     {
-        echo App::getLocale();
         return [
             'name'=> 'required',
+            'content' => 'required',
             'email' => 'required|unique:students|email|unique:users,email',
             'phone' => 'required|regex:/(0)[0-9]{9}/'
         ];

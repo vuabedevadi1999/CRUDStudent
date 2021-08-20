@@ -10,7 +10,7 @@
             {{ $t('messages.Create a new student') }}
             </button>
             <!-- Modal create student-->
-            <div class="modal fade" id="createStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" data-focus="false" id="createStudent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -27,7 +27,7 @@
                                             <label for="name">{{ $t('messages.Full name') }}</label>
                                             <input v-model="student.name" type="text" class="form-control" id="name" placeholder="Enter name">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
-                                             <span v-if="hasError('name')" class="invalid-feedback">{{ firstError('name') }}</span>
+                                            <span v-if="hasError('name')" class="invalid-feedback">{{ firstError('name') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="email" :rules="validationRules.ruleEmail"  v-slot="{ errors }">
@@ -35,7 +35,7 @@
                                             <label for="email">{{ $t('messages.Email') }}</label>
                                             <input v-model="student.email" type="email" class="form-control" id="email" placeholder="Enter email">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
-                                             <span v-if="hasError('email')" class="invalid-feedback">{{ firstError('email') }}</span>
+                                            <span v-if="hasError('email')" class="invalid-feedback">{{ firstError('email') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <ValidationProvider name="phone" :rules="validationRules.rulePhone"  v-slot="{ errors }">
@@ -43,7 +43,15 @@
                                             <label for="phone">{{ $t('messages.Phone') }}</label>
                                             <input v-model="student.phone" type="text" class="form-control" id="phone" placeholder="Enter phone">
                                             <span class="invalid-feedback">{{ errors[0] }}</span>
-                                             <span v-if="hasError('phone')" class="invalid-feedback">{{ firstError('phone') }}</span>
+                                            <span v-if="hasError('phone')" class="invalid-feedback">{{ firstError('phone') }}</span>
+                                        </div>
+                                    </ValidationProvider>
+                                    <ValidationProvider name="content" :rules="validationRules.ruleRequired"  v-slot="{ errors }">
+                                        <div class="form-group">
+                                            <label for="content">{{ $t('messages.Content') }}</label>
+                                            <ckeditor v-model="student.content"></ckeditor>
+                                            <span class="invalid-feedback">{{ errors[0] }}</span>
+                                            <span v-if="hasError('content')" class="invalid-feedback">{{ firstError('content') }}</span>
                                         </div>
                                     </ValidationProvider>
                                     <button type="submit" class="btn btn-primary">{{ $t('messages.Submit') }}</button>
@@ -90,6 +98,14 @@
                                             <span v-if="hasError('phone')" class="invalid-feedback">{{ firstError('phone') }}</span>
                                         </div>
                                     </ValidationProvider>
+                                    <ValidationProvider name="content" :rules="validationRules.ruleRequired"  v-slot="{ errors }">
+                                        <div class="form-group">
+                                            <label for="content">{{ $t('messages.Content') }}</label>
+                                            <ckeditor v-model="oldStudent.editContent"></ckeditor>
+                                            <span class="invalid-feedback">{{ errors[0] }}</span>
+                                            <span v-if="hasError('content')" class="invalid-feedback">{{ firstError('content') }}</span>
+                                        </div>
+                                    </ValidationProvider>
                                     <button type="submit" class="btn btn-primary">{{$t('messages.Submit')}}</button>
                                 </form>
                             </ValidationObserver>
@@ -119,6 +135,9 @@
                                     <td>{{ student.email }}</td>
                                     <td>{{ student.phone }}</td>
                                     <td>
+                                         <button type="button" v-bind:student="student" class="btn btn-primary" @click="viewDetail(student.id)" data-toggle="modal" data-target="#editStudent">
+                                            {{ $t('messages.View') }}
+                                        </button>
                                         <button type="button" @click="editStudent(student.id)" class="btn btn-primary" data-toggle="modal" data-target="#editStudent">
                                         {{ $t('messages.Edit') }}
                                         </button>
@@ -133,7 +152,6 @@
             </div>
         </div>
     </div>
-    
 </template>
 <script>
 import { validateForm } from './validateMixin';
@@ -147,14 +165,16 @@ export default {
             student: {
                 name:'',
                 email:'',
-                phone:''
+                phone:'',
+                content:''
             },
             oldStudent: {
                 id:'',
                 oldEmail:'',
                 editName:'',
                 editEmail:'',
-                editPhone:''
+                editPhone:'',
+                editContent:''
             },
             studentData:{}
         }
@@ -169,6 +189,7 @@ export default {
                     }
                 })
                 .catch(err=>{
+                    console.log(err)
                     if(err.response.status === 401){
                         this.$router.push('profile')
                     }else{
@@ -184,12 +205,22 @@ export default {
         }
     },
     methods:{
+        viewDetail(id){
+            this.$router.push(
+                { 
+                    name:'students-detail',
+                    params:{
+                        id:id,
+                    }
+                });
+        },
         saveStudent(){
             axios.post('/api/students',this.student)
                 .then(response=>{
                     this.student.name = ''
                     this.student.email = ''
                     this.student.phone = ''
+                    this.student.content = ''
                     this.getAllStudent();
                 })
                 .catch(err=>{
@@ -204,6 +235,7 @@ export default {
                     this.oldStudent.editName = response.data.student.name
                     this.oldStudent.editEmail = response.data.student.email
                     this.oldStudent.editPhone = response.data.student.phone
+                    this.oldStudent.editContent = response.data.student.content
                 })
                 .catch(err => {
                     this.errors = err.response.data.errors;
@@ -214,13 +246,15 @@ export default {
                     name:this.oldStudent.editName,
                     email:this.oldStudent.editEmail,
                     oldEmail:this.oldStudent.oldEmail,
-                    phone:this.oldStudent.editPhone 
+                    phone:this.oldStudent.editPhone,
+                    content:this.oldStudent.editContent
             };
             axios.put('/api/students/'+ this.oldStudent.id,student)
                 .then(response => {
                     this.oldStudent.editName = ''
                     this.oldStudent.editEmail = ''
                     this.oldStudent.editPhone = ''
+                     this.oldStudent.editContent = ''
                     this.getAllStudent();
                 })
                 .catch(err => {
@@ -228,7 +262,7 @@ export default {
                 })
         },
         deleteStudent(id){
-            if(confirm("Bạn có muốn xóa sinh viên này không?")){
+            if(confirm("Bạn muốn xóa không?")){
                 axios.delete('/api/students/'+ id)
                     .then(response => {
                         this.getAllStudent();

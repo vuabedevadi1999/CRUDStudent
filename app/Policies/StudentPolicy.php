@@ -24,7 +24,7 @@ class StudentPolicy
                 return Response::allow();
             }
         }
-        return Response::deny("Bạn không có quyền xem",401);
+        return Response::deny(__('message.UnauthorizedViewStd'),401);
     }
 
     /**
@@ -41,7 +41,7 @@ class StudentPolicy
                 return Response::allow();
             }
         }
-        return Response::deny('Bạn không có quyền xem');
+        return Response::deny(__('message.UnauthorizedViewStd'),401);
     }
 
     /**
@@ -57,7 +57,7 @@ class StudentPolicy
                 return Response::allow();
             }
         }
-        return Response::deny('Bạn không có quyền tạo');
+        return Response::deny(__('message.UnauthorizedCreateStd'),401);
     }
 
     /**
@@ -74,7 +74,7 @@ class StudentPolicy
                 return Response::allow();
             }
         }
-        return Response::deny('Bạn không có quyền sửa');
+        return Response::deny(__('message.UnauthorizedUpdateStd'),401);
     }
 
     /**
@@ -91,7 +91,7 @@ class StudentPolicy
                 return Response::allow();
             }
         }
-        return Response::deny('Bạn không có quyền xóa');
+        return Response::deny(__('message.UnauthorizedDeleteStd'),401);
     }
 
     /**
@@ -108,7 +108,7 @@ class StudentPolicy
                 return Response::allow();
             }
         }
-        return Response::deny('Bạn không có quyền khôi phục');
+        return Response::deny(__('message.UnauthorizedRestoreStd'),401);
     }
 
     /**
@@ -125,6 +125,6 @@ class StudentPolicy
                 return Response::allow();
             }
         }
-        return Response::deny('Bạn không có quyền xóa');
+        return Response::deny(__('message.UnauthorizedDeleteStd'),401);
     }
 }
